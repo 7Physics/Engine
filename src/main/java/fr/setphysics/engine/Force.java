@@ -1,6 +1,6 @@
 package fr.setphysics.engine;
 
-import fr.setphysics.common.geom.Vec3;
+import main.java.fr.setphysics.common.geom.Vec3;
 
 public class Force {
 //    private String name;
