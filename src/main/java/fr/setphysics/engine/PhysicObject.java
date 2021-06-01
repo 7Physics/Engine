@@ -89,7 +89,7 @@ public class PhysicObject {
 	 * @param time : le temps écoulé depuis que la simulation a été lancée.
 	 * @return la nouvelle position de l'objet
 	 */
-	public Position calculatePosition(long time) {
+	public Position calculatePosition(double time) {
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
 				this.positionInitial.getX() + (this.speedInitial.getX() * time)
@@ -109,7 +109,7 @@ public class PhysicObject {
 	 * @param time: le temps écoulé depuis que la simulation a été lancée.
 	 * @return la nouvelle vitesse de l'objet
 	 */
-	public Vec3 calculateSpeed(long time) {
+	public Vec3 calculateSpeed(double time) {
 		// formule vitesse : v2 = vInitiale + acceleration * temps
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newSpeed = new Vec3(this.speedInitial.getX() + (additionForces.getX() * time),
