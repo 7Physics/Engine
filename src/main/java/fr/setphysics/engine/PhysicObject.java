@@ -64,7 +64,7 @@ public class PhysicObject {
 	 * @param f
 	 */
 	public void addForce(Vec3 f) {
-		forces.add(f);
+		forces.add(new Vec3(f.getX() / 10.0, f.getY() / 10.0, f.getZ() / 10.0));
 	}
 
 	/**
@@ -82,6 +82,10 @@ public class PhysicObject {
 		return additionForces;
 	}
 
+	public double positionEquation(double position, double speed, double forces, double time) {
+		return position + (speed * time) + ((1 / 2.0) * forces * Math.pow(time, 2));
+	}
+
 	/**
 	 * Calcul et mise à jour de la position de l'objet en prenant compte les
 	 * différentes forces appliquées.
@@ -92,18 +96,17 @@ public class PhysicObject {
 	public Position calculatePosition(double time) {
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
-				this.positionInitial.getX() + (this.speedInitial.getX() * time)
-						+ ((1 / 2.0) * additionForces.getX() * Math.pow(time, 2)),
-				this.positionInitial.getY() + (this.speedInitial.getY() * time)
-						+ ((1 / 2.0) * additionForces.getY() * Math.pow(time, 2)),
-				this.positionInitial.getZ() + (this.speedInitial.getZ() * time)
-						+ ((1 / 2.0) * additionForces.getZ() * Math.pow(time, 2)));
-		Logger.info("Changement de position : x :" + newCoords.getX() + " y :" + newCoords.getY() + " z :" + newCoords.getZ());
-		
-		if(newCoords.getY() < this.shape.getMinY()) {
+				positionEquation(this.positionInitial.getX(), this.speed.getX(), additionForces.getX(), time),
+				positionEquation(this.positionInitial.getY(), this.speed.getY(), additionForces.getY(), time),
+				positionEquation(this.positionInitial.getZ(), this.speed.getZ(), additionForces.getZ(), time));
+
+		Logger.info("Changement de position : x :" + newCoords.getX() + " y :" + newCoords.getY() + " z :"
+				+ newCoords.getZ());
+
+		if (newCoords.getY() < this.shape.getMinY()) {
 			newCoords.addY(this.shape.getMinY() - newCoords.getY());
 		}
-		
+
 		this.position.setCoords(newCoords);
 		return this.position;
 	}
