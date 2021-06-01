@@ -2,7 +2,7 @@ package fr.setphysics.engine;
 
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
-import main.java.fr.setphysics.common.geom.Vec3;
+import fr.setphysics.common.geom.Vec3;
 
 import java.util.List;
 
