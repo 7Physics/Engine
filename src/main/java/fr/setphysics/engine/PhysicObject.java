@@ -27,7 +27,8 @@ public class PhysicObject {
 
 	/**
 	 * Constructeur
-	 * @param shape : l'objet 3D
+	 * 
+	 * @param shape    : l'objet 3D
 	 * @param position : position initiale de l'objet 3D
 	 */
 	public PhysicObject(Shape shape, Position position) {
@@ -38,11 +39,12 @@ public class PhysicObject {
 		this.speed = new Vec3(0, 0, 0);
 		this.speedInitial = new Vec3(0, 0, 0);
 	}
-	
+
 	/**
-	 *  Constructeur
-	 * @param shape : l'objet 3D
-	 * @param position : position initiale de l'objet
+	 * Constructeur
+	 * 
+	 * @param shape     : l'objet 3D
+	 * @param position  : position initiale de l'objet
 	 * @param speedInit : vitesse initiale de l'objet
 	 */
 	public PhysicObject(Shape shape, Position position, Vec3 speedInit) {
@@ -53,9 +55,11 @@ public class PhysicObject {
 		this.speed = speedInit;
 		this.speedInitial = speedInit;
 	}
-	
+
 	/**
-	 * Ajout d'une force f (représentée par un Vec3) dans la liste des forces à appliquer.
+	 * Ajout d'une force f (représentée par un Vec3) dans la liste des forces à
+	 * appliquer.
+	 * 
 	 * @param f
 	 */
 	public void addForce(Vec3 f) {
@@ -63,7 +67,8 @@ public class PhysicObject {
 	}
 
 	/**
-	 *  Calcul du total des forces à appliquer sur l'objet.
+	 * Calcul du total des forces à appliquer sur l'objet.
+	 * 
 	 * @return Vec3 représentant le total des forces
 	 */
 	public Vec3 cumulatedForces() {
@@ -77,27 +82,32 @@ public class PhysicObject {
 	}
 
 	/**
-	 * Calcul et mise à jour de la position de l'objet en prenant compte
-	 * les différentes forces appliquées.
+	 * Calcul et mise à jour de la position de l'objet en prenant compte les
+	 * différentes forces appliquées.
+	 * 
 	 * @param time : le temps écoulé depuis que la simulation a été lancée.
 	 * @return la nouvelle position de l'objet
 	 */
-	public Position calculatePosition(double time) {
+	public Position calculatePosition(long time) {
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
-				(this.speedInitial.getX() * time) + ((1 / 2.0) * additionForces.getX() * Math.pow(time, 2)),
-				(this.speedInitial.getY() * time) + ((1 / 2.0) * additionForces.getY() * Math.pow(time, 2)),
-				(this.speedInitial.getZ() * time) + ((1 / 2.0) * additionForces.getZ() * Math.pow(time, 2)));
+				this.positionInitial.getX() + (this.speedInitial.getX() * time)
+						+ ((1 / 2.0) * additionForces.getX() * Math.pow(time, 2)),
+				this.positionInitial.getY() + (this.speedInitial.getY() * time)
+						+ ((1 / 2.0) * additionForces.getY() * Math.pow(time, 2)),
+				this.positionInitial.getZ() + (this.speedInitial.getZ() * time)
+						+ ((1 / 2.0) * additionForces.getZ() * Math.pow(time, 2)));
 		this.position.setCoords(newCoords);
 		return this.position;
 	}
 
 	/**
 	 * Calcul et mise à jour de la vitesse de l'objet.
+	 * 
 	 * @param time: le temps écoulé depuis que la simulation a été lancée.
 	 * @return la nouvelle vitesse de l'objet
 	 */
-	public Vec3 calculateSpeed(double time) {
+	public Vec3 calculateSpeed(long time) {
 		// formule vitesse : v2 = vInitiale + acceleration * temps
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newSpeed = new Vec3(this.speedInitial.getX() + (additionForces.getX() * time),
@@ -106,9 +116,10 @@ public class PhysicObject {
 		this.speed = newSpeed.clone();
 		return this.speed;
 	}
-	
+
 	/**
 	 * Calcul de la vitesse globale.
+	 * 
 	 * @return la vitesse de l'objet
 	 */
 	public double getSpeed() {
