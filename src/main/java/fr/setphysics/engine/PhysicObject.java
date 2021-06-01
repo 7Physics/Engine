@@ -99,6 +99,11 @@ public class PhysicObject {
 				this.positionInitial.getZ() + (this.speedInitial.getZ() * time)
 						+ ((1 / 2.0) * additionForces.getZ() * Math.pow(time, 2)));
 		Logger.info("Changement de position : x :" + newCoords.getX() + " y :" + newCoords.getY() + " z :" + newCoords.getZ());
+		
+		if(newCoords.getY() < this.shape.getMinY()) {
+			newCoords.addY(this.shape.getMinY() - newCoords.getY());
+		}
+		
 		this.position.setCoords(newCoords);
 		return this.position;
 	}
