@@ -3,6 +3,7 @@ package fr.setphysics.engine;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
+import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +98,7 @@ public class PhysicObject {
 						+ ((1 / 2.0) * additionForces.getY() * Math.pow(time, 2)),
 				this.positionInitial.getZ() + (this.speedInitial.getZ() * time)
 						+ ((1 / 2.0) * additionForces.getZ() * Math.pow(time, 2)));
+		Logger.info("Changement de position : x :" + newCoords.getX() + " y :" + newCoords.getY() + " z :" + newCoords.getZ());
 		this.position.setCoords(newCoords);
 		return this.position;
 	}
