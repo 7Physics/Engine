@@ -25,6 +25,14 @@ public class PhysicObject {
 	private Vec3 speed;
 	/* vitesse initiale de l'objet */
 	private Vec3 speedInitial;
+	
+	/**
+	 * Getter of all the forces applied to a Physic Object
+	 * @return
+	 */
+	public List<Vec3> getForces() {
+		return this.forces;
+	}
 
 	/**
 	 * Constructeur

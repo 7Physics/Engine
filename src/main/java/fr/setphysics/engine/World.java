@@ -22,4 +22,8 @@ public class World {
     		po.calculateSpeed(timeSeconde);
     	}
     }
+    
+    public List<PhysicObject> getPhysicObjects(){
+    	return this.physicObjects;
+    }
 }
