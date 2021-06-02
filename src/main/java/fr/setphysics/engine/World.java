@@ -15,6 +15,10 @@ public class World {
     	this.physicObjects.add(po);
     }
     
+    public void removePhysicObject(PhysicObject po) {
+    	this.physicObjects.remove(po);
+    }
+    
     public void step(long time) {
     	double timeSeconde = time/1000.0;
     	for(PhysicObject po : this.physicObjects) {

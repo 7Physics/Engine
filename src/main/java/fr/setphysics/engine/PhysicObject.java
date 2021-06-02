@@ -116,9 +116,6 @@ public class PhysicObject {
 				positionEquation(this.positionInitial.getY(), this.speedInitial.getY(), additionForces.getY(), time),
 				positionEquation(this.positionInitial.getZ(), this.speedInitial.getZ(), additionForces.getZ(), time));
 
-		Logger.info("Changement de position : x :" + newCoords.getX() + " y :" + newCoords.getY() + " z :"
-				+ newCoords.getZ());
-
 		if (newCoords.getY() < this.shape.getMinY()) {
 			Logger.warning("L'objet entre en colision avec le sol");
 			newCoords.addY(this.shape.getMinY() - newCoords.getY());
