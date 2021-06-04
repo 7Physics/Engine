@@ -75,6 +75,14 @@ public class PhysicObject {
 		forces.add(new Vec3(f.getX() / 10.0, f.getY() / 10.0, f.getZ() / 10.0));
 	}
 
+	public void addForce(Vec3 f, int index) {
+		forces.add(index, f);
+	}
+	
+	public void removeForce(int i) {
+		forces.remove(i);
+	}
+	
 	/**
 	 * Calcul du total des forces à appliquer sur l'objet.
 	 * 
