@@ -2,10 +2,13 @@ package fr.setphysics.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.engine.PhysicObject;
 
 public class World {
     private List<PhysicObject> physicObjects;
+    private Vec3 gravity;
     
     public World() {
     	this.physicObjects = new ArrayList<PhysicObject>();
@@ -25,6 +28,10 @@ public class World {
     		po.calculatePosition(timeSeconde);
     		po.calculateSpeed(timeSeconde);
     	}
+    }
+    
+    public boolean isGravityEnabled() {
+    	return gravity != null;
     }
     
     public List<PhysicObject> getPhysicObjects(){
