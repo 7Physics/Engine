@@ -8,7 +8,7 @@ import fr.setphysics.engine.PhysicObject;
 
 public class World {
     private List<PhysicObject> physicObjects;
-    private Vec3 gravity;
+    private boolean gravity;
     
     public World() {
     	this.physicObjects = new ArrayList<PhysicObject>();
@@ -22,16 +22,31 @@ public class World {
     	this.physicObjects.remove(po);
     }
     
+    public void addGravity(Vec3 gravity) {
+    	if (this.gravity) {
+    		return;
+    	}
+    	for(PhysicObject po: physicObjects) {
+    		po.addForce(gravity, 0);
+    	}
+    	this.gravity = true;
+    }
+    
+    public void deleteGravity() {
+    	if (gravity) {
+    		this.gravity = false;
+    		for(PhysicObject po: this.physicObjects) {
+    			po.removeForce(0);
+    		}
+    	}
+    }
+    
     public void step(long time) {
     	double timeSeconde = time/1000.0;
     	for(PhysicObject po : this.physicObjects) {
     		po.calculatePosition(timeSeconde);
     		po.calculateSpeed(timeSeconde);
     	}
-    }
-    
-    public boolean isGravityEnabled() {
-    	return gravity != null;
     }
     
     public List<PhysicObject> getPhysicObjects(){
