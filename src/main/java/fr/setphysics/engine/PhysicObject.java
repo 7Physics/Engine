@@ -3,7 +3,6 @@ package fr.setphysics.engine;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
-import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,17 @@ public class PhysicObject {
 	private Vec3 speed;
 	/* vitesse initiale de l'objet */
 	private Vec3 speedInitial;
+	
+	/**
+	 * Met à jour la position et la vitesse selon le temps écoulé depuis la dernière
+	 * mise à jour
+	 * 
+	 * @param time: Temps écoulé depuis la dernière mise à jour
+	 */
+	public void update(double time) {
+		this.calculatePosition(time);
+		this.calculateSpeed(time);
+	}
 	
 	/**
 	 * Getter of all the forces applied to a Physic Object
@@ -120,12 +130,11 @@ public class PhysicObject {
 	public Position calculatePosition(double time) {
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
-				positionEquation(this.positionInitial.getX(), this.speedInitial.getX(), additionForces.getX(), time),
-				positionEquation(this.positionInitial.getY(), this.speedInitial.getY(), additionForces.getY(), time),
-				positionEquation(this.positionInitial.getZ(), this.speedInitial.getZ(), additionForces.getZ(), time));
+				positionEquation(this.position.getX(), this.speed.getX(), additionForces.getX(), time),
+				positionEquation(this.position.getY(), this.speed.getY(), additionForces.getY(), time),
+				positionEquation(this.position.getZ(), this.speed.getZ(), additionForces.getZ(), time));
 
 		if (newCoords.getY() < this.shape.getMinY()) {
-			Logger.warning("L'objet entre en colision avec le sol");
 			newCoords.addY(this.shape.getMinY() - newCoords.getY());
 		}
 
@@ -153,11 +162,19 @@ public class PhysicObject {
 	public Vec3 calculateSpeed(double time) {
 		// formule vitesse : v2 = vInitiale + acceleration * temps
 		Vec3 additionForces = cumulatedForces();
-		Vec3 newSpeed = new Vec3(speedEquation(this.speedInitial.getX(),additionForces.getX(),time),
-				speedEquation(this.speedInitial.getY(),additionForces.getY(),time),
-				speedEquation(this.speedInitial.getZ(),additionForces.getZ(),time));
+		Vec3 newSpeed = new Vec3(speedEquation(this.speed.getX(),additionForces.getX(),time),
+				speedEquation(this.speed.getY(),additionForces.getY(),time),
+				speedEquation(this.speed.getZ(),additionForces.getZ(),time));
 		this.speed = newSpeed.clone();
 		return this.speed;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public Vec3 getSpeed() {
+		return speed;
 	}
 
 	/**
@@ -165,7 +182,7 @@ public class PhysicObject {
 	 * 
 	 * @return la vitesse de l'objet
 	 */
-	public double getSpeed() {
+	public double getSpeedValue() {
 		return this.speed.getX() + this.speed.getY() + this.speed.getZ();
 	}
 }
