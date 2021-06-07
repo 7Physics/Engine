@@ -1,21 +1,17 @@
 package fr.setphysics.engine;
 
-import fr.setphysics.common.geom.Bounds;
-import fr.setphysics.common.geom.Position;
-import fr.setphysics.common.geom.Shape;
-import fr.setphysics.common.geom.Vec3;
+import fr.setphysics.common.geom.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Classe représentant un objet 3D dans l'environnement avec des
  * caracteristiques physique.
  */
-public class PhysicObject {
+public class PhysicObject implements Positionable {
 	/* objet 3D */
 	private Shape shape;
 	/* position courante de l'objet 3D */
@@ -80,6 +76,10 @@ public class PhysicObject {
 		this.uniqueShapeVertices = new HashSet<>(shape.getVertices());
 	}
 
+	public Shape getShape() {
+		return shape;
+	}
+
 	/**
 	 * Ajout d'une force f (représentée par un Vec3) dans la liste des forces à
 	 * appliquer.
@@ -142,10 +142,6 @@ public class PhysicObject {
 				positionEquation(this.position.getY(), this.speed.getY(), additionForces.getY(), time),
 				positionEquation(this.position.getZ(), this.speed.getZ(), additionForces.getZ(), time));
 
-//		if (newCoords.getY() < this.shape.getBounds().getMaxY()) {
-//			newCoords.setY(this.shape.getBounds().getMaxY());
-//		}
-
 		this.position.setCoords(newCoords);
 		return this.position;
 	}
@@ -189,44 +185,6 @@ public class PhysicObject {
 	}
 
 	/**
-	 * Bounce against another object (to solve collision overlapping).
-	 *
-	 * @param other
-	 */
-	void bounceAgainst(PhysicObject other) {
-		List<Vec3> contactPoints = getContactPoints(other);
-		if (contactPoints.size() < 3) {
-			return;
-		}
-		Vec3 normal = getNormal(contactPoints);
-		Vec3 cumulatedForces = cumulatedForces();
-		this.addForce(new Vec3(
-						cumulatedForces.getX() * normal.getX(),
-						cumulatedForces.getY() * normal.getY(),
-						cumulatedForces.getZ() * normal.getZ()
-				).scale(-10)
-		);
-		this.speed.minus(new Vec3(
-				this.speed.getX()*normal.getX(),
-				this.speed.getY()*normal.getY(),
-				this.speed.getZ()*normal.getZ()
-		));
-		int antiCrash = 0;
-		do {
-			if (this.isDynamic()) {
-				this.position.translate(normal.scale(1/40f));
-			}
-			if (other.isDynamic()) {
-//				other.position.translate(normal.scale(-1/40f));
-			}
-			antiCrash++;
-		} while (this.collideWith(other) && antiCrash <= 100);
-		if(antiCrash > 100) {
-			System.out.println("Anticrash ;)");
-		}
-	}
-
-	/**
 	 * Calcul de la vitesse globale.
 	 *
 	 * @return la vitesse de l'objet
@@ -249,23 +207,6 @@ public class PhysicObject {
 
 	public boolean collideWith(PhysicObject other) {
 		return this.getBounds().intersect(other.getBounds());
-	}
-
-	private Vec3 getNormal(List<Vec3> points) {
-		Vec3 A = points.get(0).clone();
-		Vec3 B = points.get(1).clone();
-		Vec3 C = points.get(2).clone();
-		Vec3 norm = B.minus(A).multiply((C.minus(A)));
-		norm.scale(1 / Math.sqrt(Math.pow(norm.getX(), 2) + Math.pow(norm.getY(), 2) + Math.pow(norm.getZ(), 2)));
-		return norm;
-	}
-
-	public List<Vec3> getContactPoints(PhysicObject other) {
-		Bounds bounds = other.getBounds();
-		return uniqueShapeVertices.stream()
-				.map(v -> v.clone().add(position.getCoords()))
-				.filter(bounds::containsPoint)
-				.collect(Collectors.toList());
 	}
 
 	@Override
