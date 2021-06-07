@@ -54,12 +54,8 @@ public class World {
 			po.calculateSpeed(timeSeconde);
 			for(int j = i-1; j >= 0; j--) {
 				PhysicObject po2 = this.physicObjects.get(j);
-				if (po.collideWith(po2)) {
-					System.out.println(po + "collides with " + po2);
+				if ((po.isDynamic() || po2.isDynamic()) && po.collideWith(po2)) {
 					po.bounceAgainst(po2);
-					po.setDynamic(false);
-					po2.setDynamic(false);
-					// Régler le problème d'overlapping
 				}
 			}
 		}

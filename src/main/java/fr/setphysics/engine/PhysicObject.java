@@ -6,7 +6,10 @@ import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Classe représentant un objet 3D dans l'environnement avec des
@@ -26,10 +29,24 @@ public class PhysicObject {
 	/* vitesse initiale de l'objet */
 	private Vec3 speedInitial;
 
+	private Set<Vec3> uniqueShapeVertices;
+
 	private boolean dynamic = true;
-	
+
+	/**
+	 * Met à jour la position et la vitesse selon le temps écoulé depuis la dernière
+	 * mise à jour
+	 *
+	 * @param time: Temps écoulé depuis la dernière mise à jour
+	 */
+	public void update(double time) {
+		this.calculatePosition(time);
+		this.calculateSpeed(time);
+	}
+
 	/**
 	 * Getter of all the forces applied to a Physic Object
+	 *
 	 * @return
 	 */
 	public List<Vec3> getForces() {
@@ -43,12 +60,7 @@ public class PhysicObject {
 	 * @param position : position initiale de l'objet 3D
 	 */
 	public PhysicObject(Shape shape, Position position) {
-		this.shape = shape;
-		this.position = position;
-		this.positionInitial = new Position(position.getX(), position.getY(), position.getZ());
-		this.forces = new ArrayList<>();
-		this.speed = new Vec3(0, 0, 0);
-		this.speedInitial = new Vec3(0, 0, 0);
+		this(shape, position, new Vec3(0, 0, 0));
 	}
 
 	/**
@@ -65,6 +77,7 @@ public class PhysicObject {
 		this.forces = new ArrayList<Vec3>();
 		this.speed = speedInit;
 		this.speedInitial = new Vec3(speedInit.getX(), speedInit.getY(), speedInit.getZ());
+		this.uniqueShapeVertices = new HashSet<>(shape.getVertices());
 	}
 
 	/**
@@ -125,12 +138,11 @@ public class PhysicObject {
 		}
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
-				positionEquation(this.positionInitial.getX(), this.speedInitial.getX(), additionForces.getX(), time),
-				positionEquation(this.positionInitial.getY(), this.speedInitial.getY(), additionForces.getY(), time),
-				positionEquation(this.positionInitial.getZ(), this.speedInitial.getZ(), additionForces.getZ(), time));
+				positionEquation(this.position.getX(), this.speed.getX(), additionForces.getX(), time),
+				positionEquation(this.position.getY(), this.speed.getY(), additionForces.getY(), time),
+				positionEquation(this.position.getZ(), this.speed.getZ(), additionForces.getZ(), time));
 
 //		if (newCoords.getY() < this.shape.getBounds().getMaxY()) {
-//			Logger.warning("L'objet entre en colision avec le sol");
 //			newCoords.setY(this.shape.getBounds().getMaxY());
 //		}
 
@@ -156,37 +168,70 @@ public class PhysicObject {
 	 * @return la nouvelle vitesse de l'objet
 	 */
 	public Vec3 calculateSpeed(double time) {
-		if(!this.dynamic) {
+		if (!this.dynamic) {
 			return this.speed;
 		}
 		// formule vitesse : v2 = vInitiale + acceleration * temps
 		Vec3 additionForces = cumulatedForces();
-		Vec3 newSpeed = new Vec3(speedEquation(this.speedInitial.getX(),additionForces.getX(),time),
-				speedEquation(this.speedInitial.getY(),additionForces.getY(),time),
-				speedEquation(this.speedInitial.getZ(),additionForces.getZ(),time));
+		Vec3 newSpeed = new Vec3(speedEquation(this.speed.getX(), additionForces.getX(), time),
+				speedEquation(this.speed.getY(), additionForces.getY(), time),
+				speedEquation(this.speed.getZ(), additionForces.getZ(), time));
 		this.speed = newSpeed.clone();
 		return this.speed;
 	}
 
+	public Position getPosition() {
+		return position;
+	}
+
+	public Vec3 getSpeed() {
+		return speed;
+	}
+
 	/**
 	 * Bounce against another object (to solve collision overlapping).
+	 *
 	 * @param other
 	 */
 	void bounceAgainst(PhysicObject other) {
+		List<Vec3> contactPoints = getContactPoints(other);
+		if (contactPoints.size() < 3) {
+			return;
+		}
+		Vec3 normal = getNormal(contactPoints);
+		Vec3 cumulatedForces = cumulatedForces();
+		this.addForce(new Vec3(
+						cumulatedForces.getX() * normal.getX(),
+						cumulatedForces.getY() * normal.getY(),
+						cumulatedForces.getZ() * normal.getZ()
+				).scale(-10)
+		);
+		this.speed.minus(new Vec3(
+				this.speed.getX()*normal.getX(),
+				this.speed.getY()*normal.getY(),
+				this.speed.getZ()*normal.getZ()
+		));
+		int antiCrash = 0;
 		do {
-			if(this.isDynamic())
-				this.position.translate(this.cumulatedForces().scale(-0.05));
-			if(other.isDynamic())
-				other.position.translate(other.cumulatedForces().scale(-0.05));
-		}while (this.collideWith(other));
+			if (this.isDynamic()) {
+				this.position.translate(normal.scale(1/40f));
+			}
+			if (other.isDynamic()) {
+//				other.position.translate(normal.scale(-1/40f));
+			}
+			antiCrash++;
+		} while (this.collideWith(other) && antiCrash <= 100);
+		if(antiCrash > 100) {
+			System.out.println("Anticrash ;)");
+		}
 	}
 
 	/**
 	 * Calcul de la vitesse globale.
-	 * 
+	 *
 	 * @return la vitesse de l'objet
 	 */
-	public double getSpeed() {
+	public double getSpeedValue() {
 		return this.speed.getX() + this.speed.getY() + this.speed.getZ();
 	}
 
@@ -204,5 +249,31 @@ public class PhysicObject {
 
 	public boolean collideWith(PhysicObject other) {
 		return this.getBounds().intersect(other.getBounds());
+	}
+
+	private Vec3 getNormal(List<Vec3> points) {
+		Vec3 A = points.get(0).clone();
+		Vec3 B = points.get(1).clone();
+		Vec3 C = points.get(2).clone();
+		Vec3 norm = B.minus(A).multiply((C.minus(A)));
+		norm.scale(1 / Math.sqrt(Math.pow(norm.getX(), 2) + Math.pow(norm.getY(), 2) + Math.pow(norm.getZ(), 2)));
+		return norm;
+	}
+
+	public List<Vec3> getContactPoints(PhysicObject other) {
+		Bounds bounds = other.getBounds();
+		return uniqueShapeVertices.stream()
+				.map(v -> v.clone().add(position.getCoords()))
+				.filter(bounds::containsPoint)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String toString() {
+		return "PhysicObject{" +
+				"shape=" + shape +
+				", position=" + position +
+				", dynamic=" + dynamic +
+				'}';
 	}
 }

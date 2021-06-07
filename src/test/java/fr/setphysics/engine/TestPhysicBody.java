@@ -30,116 +30,147 @@ public class TestPhysicBody {
 	@Test
 	public void positionTestX() {
 		po.addForce(forceX);
-		assertEquals(0,po.calculatePosition(0).getCoords().getX(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getPosition().getCoords().getX(),epsilon);
 		// time = 1
-		assertEquals(0.1,po.calculatePosition(1).getCoords().getX(), epsilon);
+		po.update(1);
+		assertEquals(0.1,po.getPosition().getCoords().getX(), epsilon);
 		// time = 2
-		assertEquals(0.4,po.calculatePosition(2).getCoords().getX(), epsilon);
+		po.update(1);
+		assertEquals(0.4,po.getPosition().getCoords().getX(), epsilon);
 		// time = 3
-		assertEquals(0.9,po.calculatePosition(3).getCoords().getX(), epsilon);
+		po.update(1);
+		assertEquals(0.9,po.getPosition().getCoords().getX(), epsilon);
 	}
 	
 	@Test
 	public void positionTestY() {
 		po.addForce(forceY);
+		po.update(0);
 		//Cas de collision avec le sol
-		assertEquals(1,po.calculatePosition(0).getCoords().getY(),epsilon);
+		assertEquals(1,po.getPosition().getCoords().getY(),epsilon);
 		// time = 1
-		assertEquals(1,po.calculatePosition(1).getCoords().getY(), epsilon);
+		po.update(1);
+		assertEquals(1.15,po.getPosition().getCoords().getY(), epsilon);
 		// time = 2
-		assertEquals(1,po.calculatePosition(2).getCoords().getY(), epsilon);
+		po.update(1);
+		assertEquals(1.6,po.getPosition().getCoords().getY(), epsilon);
 		// time = 3
-		assertEquals(1.35,po.calculatePosition(3).getCoords().getY(), epsilon);
+		po.update(1);
+		assertEquals(2.35,po.getPosition().getCoords().getY(), epsilon);
 	}
 	
 	@Test
 	public void positionTestZ() {
 		po.addForce(forceZ);
+		po.update(0);
 		assertEquals(0,po.calculatePosition(0).getCoords().getZ(),epsilon);
 		// time = 1
-		assertEquals(0.25,po.calculatePosition(1).getCoords().getZ(), epsilon);
+		po.update(1);
+		assertEquals(0.25,po.getPosition().getCoords().getZ(), epsilon);
 		// time = 2
-		assertEquals(1.0,po.calculatePosition(2).getCoords().getZ(), epsilon);
+		po.update(1);
+		assertEquals(1.0,po.getPosition().getCoords().getZ(), epsilon);
 		// time = 3
-		assertEquals(2.25,po.calculatePosition(3).getCoords().getZ(), epsilon);
+		po.update(1);
+		assertEquals(2.25,po.getPosition().getCoords().getZ(), epsilon);
 	}
 	
 	@Test
 	public void positionTestXYZ() {
 		po.addForce(forceXYZ);
-		assertEquals(0,po.calculatePosition(0).getCoords().getX(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getPosition().getCoords().getX(),epsilon);
 		//Cas de collision -> le y est modifié
-		assertEquals(1,po.calculatePosition(0).getCoords().getY(),epsilon);
-		assertEquals(0,po.calculatePosition(0).getCoords().getZ(),epsilon);
+		assertEquals(1,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 1
-		assertEquals(0.1,po.calculatePosition(1).getCoords().getX(),epsilon);
-		//Cas de collision -> le y est modifié
-		assertEquals(1,po.calculatePosition(1).getCoords().getY(),epsilon);
-		assertEquals(0.15,po.calculatePosition(1).getCoords().getZ(),epsilon);
+		po.update(1);
+		assertEquals(0.1,po.getPosition().getCoords().getX(),epsilon);
+		assertEquals(1.3,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0.15,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 2
-		assertEquals(0.4,po.calculatePosition(2).getCoords().getX(),epsilon);
-		assertEquals(1.2,po.calculatePosition(2).getCoords().getY(),epsilon);
-		assertEquals(0.6,po.calculatePosition(2).getCoords().getZ(),epsilon);
+		po.update(1);
+		assertEquals(0.4,po.getPosition().getCoords().getX(),epsilon);
+		assertEquals(2.2,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0.6,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 3
-		assertEquals(0.9,po.calculatePosition(3).getCoords().getX(),epsilon);
-		assertEquals(2.7,po.calculatePosition(3).getCoords().getY(),epsilon);
-		assertEquals(1.35,po.calculatePosition(3).getCoords().getZ(),epsilon);
+		po.update(1);
+		assertEquals(0.9,po.getPosition().getCoords().getX(),epsilon);
+		assertEquals(3.7,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(1.35,po.getPosition().getCoords().getZ(),epsilon);
 	}
 	
 	@Test
 	public void speedTestX() {
 		po.addForce(forceX);
-		assertEquals(0,po.calculateSpeed(0).getX(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getSpeed().getX(),epsilon);
 		// time = 1
-		assertEquals(0.2,po.calculateSpeed(1).getX(), epsilon);
+		po.update(1);
+		assertEquals(0.2,po.getSpeed().getX(), epsilon);
 		// time = 2
-		assertEquals(0.4,po.calculateSpeed(2).getX(), epsilon);
+		po.update(1);
+		assertEquals(0.4,po.getSpeed().getX(), epsilon);
 		// time = 3
-		assertEquals(0.6,po.calculateSpeed(3).getX(), epsilon);
+		po.update(1);
+		assertEquals(0.6,po.getSpeed().getX(), epsilon);
 	}
 	
 	@Test
 	public void speedTestY() {
 		po.addForce(forceY);
-		assertEquals(0,po.calculateSpeed(0).getY(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getSpeed().getY(),epsilon);
 		// time = 1
-		assertEquals(.3,po.calculateSpeed(1).getY(), epsilon);
+		po.update(1);
+		assertEquals(.3,po.getSpeed().getY(), epsilon);
 		// time = 2
-		assertEquals(.6,po.calculateSpeed(2).getY(), epsilon);
+		po.update(1);
+		assertEquals(.6,po.getSpeed().getY(), epsilon);
 		// time = 3
-		assertEquals(.9,po.calculateSpeed(3).getY(), epsilon);
+		po.update(1);
+		assertEquals(.9,po.getSpeed().getY(), epsilon);
 	}
 	
 	@Test
 	public void speedTestZ() {
 		po.addForce(forceZ);
-		assertEquals(0,po.calculateSpeed(0).getZ(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getSpeed().getZ(),epsilon);
 		// time = 1
-		assertEquals(.5,po.calculateSpeed(1).getZ(), epsilon);
+		po.update(1);
+		assertEquals(.5,po.getSpeed().getZ(), epsilon);
 		// time = 2
-		assertEquals(1.0,po.calculateSpeed(2).getZ(), epsilon);
+		po.update(1);
+		assertEquals(1.0,po.getSpeed().getZ(), epsilon);
 		// time = 3
-		assertEquals(1.5,po.calculateSpeed(3).getZ(), epsilon);
+		po.update(1);
+		assertEquals(1.5,po.getSpeed().getZ(), epsilon);
 	}
 	
 	@Test
 	public void speedTestXYZ() {
 		po.addForce(forceXYZ);
-		assertEquals(0,po.calculateSpeed(0).getX(),epsilon);
-		assertEquals(0,po.calculateSpeed(0).getY(),epsilon);
-		assertEquals(0,po.calculateSpeed(0).getZ(),epsilon);
+		po.update(0);
+		assertEquals(0,po.getSpeed().getX(),epsilon);
+		assertEquals(0,po.getSpeed().getY(),epsilon);
+		assertEquals(0,po.getSpeed().getZ(),epsilon);
 		//time = 1
-		assertEquals(.2,po.calculateSpeed(1).getX(),epsilon);
-		assertEquals(.6,po.calculateSpeed(1).getY(),epsilon);
-		assertEquals(.3,po.calculateSpeed(1).getZ(),epsilon);
+		po.update(1);
+		assertEquals(.2,po.getSpeed().getX(),epsilon);
+		assertEquals(.6,po.getSpeed().getY(),epsilon);
+		assertEquals(.3,po.getSpeed().getZ(),epsilon);
 		//time = 2
-		assertEquals(.4,po.calculateSpeed(2).getX(),epsilon);
-		assertEquals(1.2,po.calculateSpeed(2).getY(),epsilon);
-		assertEquals(.6,po.calculateSpeed(2).getZ(),epsilon);
+		po.update(1);
+		assertEquals(.4,po.getSpeed().getX(),epsilon);
+		assertEquals(1.2,po.getSpeed().getY(),epsilon);
+		assertEquals(.6,po.getSpeed().getZ(),epsilon);
 		//time = 3
-		assertEquals(.6,po.calculateSpeed(3).getX(),epsilon);
-		assertEquals(1.8,po.calculateSpeed(3).getY(),epsilon);
-		assertEquals(.9,po.calculateSpeed(3).getZ(),epsilon);
+		po.update(1);
+		assertEquals(.6,po.getSpeed().getX(),epsilon);
+		assertEquals(1.8,po.getSpeed().getY(),epsilon);
+		assertEquals(.9,po.getSpeed().getZ(),epsilon);
 	}
 
 }
