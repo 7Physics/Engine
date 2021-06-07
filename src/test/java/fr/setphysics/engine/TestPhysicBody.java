@@ -1,4 +1,4 @@
-package fr.setphysics.testengine;
+package fr.setphysics.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,7 +9,6 @@ import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.common.geom.shape.Sphere;
-import fr.setphysics.engine.PhysicObject;
 
 public class TestPhysicBody {
 	private static final double epsilon = 0.001;

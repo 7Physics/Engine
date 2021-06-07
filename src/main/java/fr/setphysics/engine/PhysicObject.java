@@ -1,9 +1,9 @@
 package fr.setphysics.engine;
 
+import fr.setphysics.common.geom.Bounds;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
-import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,8 @@ public class PhysicObject {
 	private Vec3 speed;
 	/* vitesse initiale de l'objet */
 	private Vec3 speedInitial;
+
+	private boolean dynamic = true;
 	
 	/**
 	 * Getter of all the forces applied to a Physic Object
@@ -44,7 +46,7 @@ public class PhysicObject {
 		this.shape = shape;
 		this.position = position;
 		this.positionInitial = new Position(position.getX(), position.getY(), position.getZ());
-		this.forces = new ArrayList<Vec3>();
+		this.forces = new ArrayList<>();
 		this.speed = new Vec3(0, 0, 0);
 		this.speedInitial = new Vec3(0, 0, 0);
 	}
@@ -118,16 +120,19 @@ public class PhysicObject {
 	 * @return la nouvelle position de l'objet
 	 */
 	public Position calculatePosition(double time) {
+		if(!this.dynamic) {
+			return this.position;
+		}
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
 				positionEquation(this.positionInitial.getX(), this.speedInitial.getX(), additionForces.getX(), time),
 				positionEquation(this.positionInitial.getY(), this.speedInitial.getY(), additionForces.getY(), time),
 				positionEquation(this.positionInitial.getZ(), this.speedInitial.getZ(), additionForces.getZ(), time));
 
-		if (newCoords.getY() < this.shape.getMinY()) {
-			Logger.warning("L'objet entre en colision avec le sol");
-			newCoords.addY(this.shape.getMinY() - newCoords.getY());
-		}
+//		if (newCoords.getY() < this.shape.getBounds().getMaxY()) {
+//			Logger.warning("L'objet entre en colision avec le sol");
+//			newCoords.setY(this.shape.getBounds().getMaxY());
+//		}
 
 		this.position.setCoords(newCoords);
 		return this.position;
@@ -151,6 +156,9 @@ public class PhysicObject {
 	 * @return la nouvelle vitesse de l'objet
 	 */
 	public Vec3 calculateSpeed(double time) {
+		if(!this.dynamic) {
+			return this.speed;
+		}
 		// formule vitesse : v2 = vInitiale + acceleration * temps
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newSpeed = new Vec3(speedEquation(this.speedInitial.getX(),additionForces.getX(),time),
@@ -161,11 +169,40 @@ public class PhysicObject {
 	}
 
 	/**
+	 * Bounce against another object (to solve collision overlapping).
+	 * @param other
+	 */
+	void bounceAgainst(PhysicObject other) {
+		do {
+			if(this.isDynamic())
+				this.position.translate(this.cumulatedForces().scale(-0.05));
+			if(other.isDynamic())
+				other.position.translate(other.cumulatedForces().scale(-0.05));
+		}while (this.collideWith(other));
+	}
+
+	/**
 	 * Calcul de la vitesse globale.
 	 * 
 	 * @return la vitesse de l'objet
 	 */
 	public double getSpeed() {
 		return this.speed.getX() + this.speed.getY() + this.speed.getZ();
+	}
+
+	public Bounds getBounds() {
+		return shape.getBounds().translate(this.position.getCoords());
+	}
+
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
+	}
+
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	public boolean collideWith(PhysicObject other) {
+		return this.getBounds().intersect(other.getBounds());
 	}
 }
