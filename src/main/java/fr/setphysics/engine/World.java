@@ -50,8 +50,7 @@ public class World {
     public void step(long time) {
     	double timeSeconde = time/1000.0;
     	for(PhysicObject po : this.physicObjects) {
-    		po.calculatePosition(timeSeconde);
-    		po.calculateSpeed(timeSeconde);
+    		po.update(timeSeconde);
     	}
     }
     
