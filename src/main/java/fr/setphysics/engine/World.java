@@ -68,12 +68,12 @@ public class World {
 		for(int i = 0; i < index; i++) {
 			PhysicObject po2 = physicObjects.get(i);
 
-			if(po2.isDynamic()) {
-				handleCollision(po2, po);
-			}
-			if(po.isDynamic()) {
-				handleCollision(po, po2);
-			}
+//			if(po2.isDynamic()) {
+			handleCollision(po, po2);
+//			}
+//			if(po.isDynamic()) {
+//				handleCollision(po, po2);
+//			}
 		}
 	}
 
@@ -83,42 +83,52 @@ public class World {
 		Vec3 nextPosX = new Vec3(a.getX(), lastPosition.getY(), lastPosition.getZ());
 		Vec3 nextPosZ = new Vec3(lastPosition.getX(), lastPosition.getY(), a.getZ());
 
+		Bounds bounds = a.getShape().getBounds();
 		Bounds otherBounds = b.getBounds();
-		if(a.getShape().getBounds().translate(nextPosZ).intersect(otherBounds)) {
-			double f = Math.abs(a.getSpeed().getZ()/b.getSpeed().getZ());
-			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
-				f = 1;
-			}
-			if(a.getSpeed().getZ() < 0) {
-				a.getPosition().setZ(otherBounds.getMaxZ()*f+a.getBounds().getLength()/2+0.001f);
+		if(bounds.translate(nextPosZ).intersect(otherBounds)) {
+			if(b.getSpeed().getZ() >= 0) {
+				if(b.isDynamic())
+				b.getPosition().setZ(b.getPosition().getZ()+b.getSpeed().getZ()/30);
+				if(a.isDynamic())
+				a.getPosition().setZ(a.getPosition().getZ()-a.getSpeed().getZ()/30);
 			}else{
-				a.getPosition().setZ(otherBounds.getMinZ()*f-a.getBounds().getLength()/2-0.001f);
+				if(b.isDynamic())
+				b.getPosition().setZ(b.getPosition().getZ()+b.getSpeed().getZ()/30);
+				if(a.isDynamic())
+				a.getPosition().setZ(a.getPosition().getZ()-a.getSpeed().getZ()/30);
 			}
 			a.getSpeed().setZ(0d);
+			b.getSpeed().setZ(0d);
 		}
-		else if(a.getShape().getBounds().translate(nextPosX).intersect(otherBounds)) {
-			double f = Math.abs(a.getSpeed().getX()/b.getSpeed().getX());
-			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
-				f = 1;
-			}
-			if(a.getSpeed().getX() < 0) {
-				a.getPosition().setX(otherBounds.getMaxX()*f+a.getBounds().getWidth()/2+0.001f);
+		else if(bounds.translate(nextPosX).intersect(otherBounds)) {
+			if(b.getSpeed().getX() >= 0) {
+				if(b.isDynamic())
+				b.getPosition().setX(b.getPosition().getX()+b.getSpeed().getX()/30);
+				if(a.isDynamic())
+				a.getPosition().setX(a.getPosition().getX()-a.getSpeed().getX()/30);
 			}else{
-				a.getPosition().setX(otherBounds.getMinX()*f-a.getBounds().getWidth()/2-0.001f);
+				if(b.isDynamic())
+				b.getPosition().setX(b.getPosition().getX()+b.getSpeed().getX()/30);
+				if(a.isDynamic())
+				a.getPosition().setX(a.getPosition().getX()-a.getSpeed().getX()/30);
 			}
 			a.getSpeed().setX(0d);
+			b.getSpeed().setX(0d);
 		}
-		else if(a.getShape().getBounds().translate(nextPosY).intersect(otherBounds)) {
-			double f = Math.abs(a.getSpeed().getY()/b.getSpeed().getY());
-			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
-				f = 1;
-			}
-			if(a.getSpeed().getY() < 0) {
-				a.getPosition().setY(otherBounds.getMaxY()*f+a.getBounds().getHeight()/2+0.001f);
+		else if(bounds.translate(nextPosY).intersect(otherBounds)) {
+			if(b.getSpeed().getY() >= 0) {
+				if(b.isDynamic())
+				b.getPosition().setY(b.getPosition().getY()+b.getSpeed().getY()/30);
+				if(a.isDynamic())
+				a.getPosition().setY(a.getPosition().getY()-a.getSpeed().getY()/30);
 			}else{
-				a.getPosition().setY(otherBounds.getMinY()*f-a.getBounds().getHeight()/2-0.001f);
+				if(b.isDynamic())
+				b.getPosition().setY(b.getPosition().getY()-b.getSpeed().getY()/30);
+				if(a.isDynamic())
+				a.getPosition().setY(a.getPosition().getY()+a.getSpeed().getY()/30);
 			}
 			a.getSpeed().setY(0d);
+			b.getSpeed().setY(0d);
 		}
 	}
     

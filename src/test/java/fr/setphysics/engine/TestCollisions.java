@@ -55,11 +55,18 @@ public class TestCollisions {
         ground.setDynamic(false);
         world.addPhysicObject(ground);
 
-//        PhysicObject mur = addCube(new Vec3(0, .15, -1), new Vec3(0, 0, 0), new Vec3(3, 2, .1));
-//        mur.setDynamic(false);
+        PhysicObject mur = addCube(new Vec3(0, .15, -1), new Vec3(0, 0, 0), new Vec3(3, 2, .1), Color.GRAY);
+        mur.setDynamic(false);
 
-//        addCube(new Vec3(.05, .1, 1), new Vec3(0, 0, -1));
+//        addCube(new Vec3(0, 1, 1), new Vec3(0, 0, 0), Color.RED);
+
+//        addCube(new Vec3(0, .1, 1), new Vec3(0, 0, -1), Color.RED);
 //        addCube(new Vec3(0, .1, -1), new Vec3(0, 0, 1));
+//
+//        addCube(new Vec3(1, .1, 0), new Vec3(-1, 0, 0), Color.RED);
+//        addCube(new Vec3(-1, .1, 0), new Vec3(1, 0, 0));
+
+//        addCube(new Vec3(0, 1, 0), new Vec3(0, 0, 0));
 
 //        addCube(new Vec3(1, 1, 1), new Vec3(-1, 0, -1));
 //        addCube(new Vec3(-1, 1, -1), new Vec3(1, 0, 1));
@@ -70,10 +77,10 @@ public class TestCollisions {
 //        addCube(new Vec3(0, 1, 1), new Vec3(0, 0, -8));
 //        addCube(new Vec3(-1, 1, 1), new Vec3(0, 0, -8));
 
-//        for(int i = 0; i < 5; i++) {
-//            addSphere(new Vec3(0, i+2, 0), new Vec3(0, 0, 0));
-//            addSphere(new Vec3(0, i+7, .05), new Vec3(0, 0, 0));
-//        }
+        for(int i = 0; i < 5; i++) {
+            addSphere(new Vec3(0, i+2, 0), new Vec3(0, 0, 0));
+            addSphere(new Vec3(0, i+7, .05), new Vec3(0, 0, 0));
+        }
 
         Random r = new Random();
 
@@ -108,12 +115,16 @@ public class TestCollisions {
     }
 
     private PhysicObject addCube(Vec3 position, Vec3 force) {
-        return addCube(position, force, new Vec3(.1, .1, .1));
+        return addCube(position, force, new Vec3(.1, .1, .1), Color.GRAY);
     }
 
-    private PhysicObject addCube(Vec3 position, Vec3 force, Vec3 dim) {
+    private PhysicObject addCube(Vec3 position, Vec3 force, Color color) {
+        return addCube(position, force, new Vec3(.1, .1, .1), color);
+    }
+
+    private PhysicObject addCube(Vec3 position, Vec3 force, Vec3 dim, Color color) {
         Position pos = new Position(position);
-        Object3D object3D = new Object3D(new Cuboid(dim.getX(), dim.getZ(), dim.getY()), pos);
+        Object3D object3D = new Object3D(new Cuboid(dim.getX(), dim.getZ(), dim.getY()), pos, color, Color.WHITE);
         scene3D.addObject(object3D);
 
         PhysicObject cube1 = new PhysicObject(new Cuboid(dim.getX(), dim.getZ(), dim.getY()), pos);
