@@ -55,8 +55,8 @@ public class TestCollisions {
         ground.setDynamic(false);
         world.addPhysicObject(ground);
 
-        PhysicObject mur = addCube(new Vec3(0, .15, -1), new Vec3(0, 0, 0), new Vec3(3, 2, .1));
-        mur.setDynamic(false);
+//        PhysicObject mur = addCube(new Vec3(0, .15, -1), new Vec3(0, 0, 0), new Vec3(3, 2, .1));
+//        mur.setDynamic(false);
 
 //        addCube(new Vec3(.05, .1, 1), new Vec3(0, 0, -1));
 //        addCube(new Vec3(0, .1, -1), new Vec3(0, 0, 1));
@@ -70,16 +70,16 @@ public class TestCollisions {
 //        addCube(new Vec3(0, 1, 1), new Vec3(0, 0, -8));
 //        addCube(new Vec3(-1, 1, 1), new Vec3(0, 0, -8));
 
-        for(int i = 0; i < 5; i++) {
-            addSphere(new Vec3(0, i+2, 0), new Vec3(0, 0, 0));
-            addSphere(new Vec3(0, i+7, .05), new Vec3(0, 0, 0));
-        }
+//        for(int i = 0; i < 5; i++) {
+//            addSphere(new Vec3(0, i+2, 0), new Vec3(0, 0, 0));
+//            addSphere(new Vec3(0, i+7, .05), new Vec3(0, 0, 0));
+//        }
 
         Random r = new Random();
 
-//        for(int i = 0; i < 100; i++) {
-//            addSphere(new Vec3(r.nextFloat()*6-3, i/3f, r.nextFloat()*6-3), new Vec3(r.nextFloat()*4-2, 0, r.nextFloat()*4-2));
-//        }
+        for(int i = 0; i < 100; i++) {
+            addSphere(new Vec3(r.nextFloat()*6-3, i/3f, r.nextFloat()*6-3), new Vec3(r.nextFloat()*4-2, 0, r.nextFloat()*4-2));
+        }
 
         final long[] start = {System.currentTimeMillis()};
 
@@ -97,7 +97,7 @@ public class TestCollisions {
 
     private PhysicObject addSphere(Vec3 position, Vec3 force) {
         Position pos = new Position(position);
-        Object3D object3D = new Object3D(new Sphere(.1, 1), pos, Color.magenta);
+        Object3D object3D = new Object3D(new Sphere(.1, 2), pos, Color.magenta);
         scene3D.addObject(object3D);
 
         PhysicObject sphere1 = new PhysicObject(new Sphere(.1, 1), pos);

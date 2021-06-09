@@ -14,6 +14,10 @@ import java.util.Set;
 public class PhysicObject implements Positionable {
 	/* objet 3D */
 	private Shape shape;
+	/**
+	 * position de l'objet à la frame précédente
+	 */
+	private Position lastPosition;
 	/* position courante de l'objet 3D */
 	private Position position;
 	/* position initiale de l'objet 3D */
@@ -69,6 +73,7 @@ public class PhysicObject implements Positionable {
 	public PhysicObject(Shape shape, Position position, Vec3 speedInit) {
 		this.shape = shape;
 		this.position = position;
+		this.lastPosition = position;
 		this.positionInitial = new Position(position.getX(), position.getY(), position.getZ());
 		this.forces = new ArrayList<Vec3>();
 		this.speed = speedInit;
@@ -136,6 +141,7 @@ public class PhysicObject implements Positionable {
 		if(!this.dynamic) {
 			return this.position;
 		}
+		this.lastPosition = this.position.clone();
 		Vec3 additionForces = cumulatedForces();
 		Vec3 newCoords = new Vec3(
 				positionEquation(this.position.getX(), this.speed.getX(), additionForces.getX(), time),
@@ -174,6 +180,10 @@ public class PhysicObject implements Positionable {
 				speedEquation(this.speed.getZ(), additionForces.getZ(), time));
 		this.speed = newSpeed.clone();
 		return this.speed;
+	}
+
+	public Position getLastPosition() {
+		return lastPosition;
 	}
 
 	public Position getPosition() {

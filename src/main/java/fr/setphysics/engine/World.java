@@ -52,53 +52,73 @@ public class World {
     	double timeSeconde = time/1000.0;
     	for(int i = 0; i < this.physicObjects.size(); i++) {
     		PhysicObject po = this.physicObjects.get(i);
-			Position lastPosition = po.getPosition().clone();
 			po.calculatePosition(timeSeconde);
 			po.calculateSpeed(timeSeconde);
-			if(po.isDynamic()) {
-				handleCollisions(po, lastPosition);
-			}
+			handleCollisions(po, i);
 		}
     }
 
-    private void handleCollisions(PhysicObject po, Position lastPosition) {
+    private void handleCollisions(PhysicObject po, int index) {
 		// On conserve la position actuelle de l'objet
 		// On le déplace
 		// On regarde s'il y a collision : en y, en x puis en z
 		// Si oui : on adapte la coordonnée en question
 		// On modifie la vitesse pour éviter qu'elle s'incrémente encore plus
-		Vec3 nextPosY = new Vec3(lastPosition.getX(), po.getY(), lastPosition.getZ());
-		Vec3 nextPosX = new Vec3(po.getX(), lastPosition.getY(), lastPosition.getZ());
-		Vec3 nextPosZ = new Vec3(lastPosition.getX(), lastPosition.getY(), po.getZ());
-		for(PhysicObject po2 : physicObjects) {
-			if(po == po2) {
-				continue;
+
+		for(int i = 0; i < index; i++) {
+			PhysicObject po2 = physicObjects.get(i);
+
+			if(po2.isDynamic()) {
+				handleCollision(po2, po);
 			}
-			Bounds otherBounds = po2.getBounds();
-			if(po.getShape().getBounds().translate(nextPosZ).intersect(otherBounds)) {
-				if(po.getSpeed().getZ() < 0) {
-					po.getPosition().setZ(otherBounds.getMaxZ()+po.getBounds().getLength()/2+0.001f);
-				}else{
-					po.getPosition().setZ(otherBounds.getMinZ()-po.getBounds().getLength()/2-0.001f);
-				}
-				po.getSpeed().setZ(0d);
+			if(po.isDynamic()) {
+				handleCollision(po, po2);
 			}
-			else if(po.getShape().getBounds().translate(nextPosX).intersect(otherBounds)) {
-				if(po.getSpeed().getX() < 0) {
-					po.getPosition().setX(otherBounds.getMaxX()+po.getBounds().getWidth()/2+0.001f);
-				}else{
-					po.getPosition().setX(otherBounds.getMinX()-po.getBounds().getWidth()/2-0.001f);
-				}
-				po.getSpeed().setX(0d);
+		}
+	}
+
+	private void handleCollision(PhysicObject a, PhysicObject b) {
+    	Position lastPosition = a.getLastPosition();
+		Vec3 nextPosY = new Vec3(lastPosition.getX(), a.getY(), lastPosition.getZ());
+		Vec3 nextPosX = new Vec3(a.getX(), lastPosition.getY(), lastPosition.getZ());
+		Vec3 nextPosZ = new Vec3(lastPosition.getX(), lastPosition.getY(), a.getZ());
+
+		Bounds otherBounds = b.getBounds();
+		if(a.getShape().getBounds().translate(nextPosZ).intersect(otherBounds)) {
+			double f = Math.abs(a.getSpeed().getZ()/b.getSpeed().getZ());
+			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
+				f = 1;
 			}
-			else if(po.getShape().getBounds().translate(nextPosY).intersect(otherBounds)) {
-				if(po.getSpeed().getY() < 0) {
-					po.getPosition().setY(otherBounds.getMaxY()+po.getBounds().getHeight()/2+0.001f);
-				}else{
-					po.getPosition().setY(otherBounds.getMinY()-po.getBounds().getHeight()/2-0.001f);
-				}
-				po.getSpeed().setY(0d);
+			if(a.getSpeed().getZ() < 0) {
+				a.getPosition().setZ(otherBounds.getMaxZ()*f+a.getBounds().getLength()/2+0.001f);
+			}else{
+				a.getPosition().setZ(otherBounds.getMinZ()*f-a.getBounds().getLength()/2-0.001f);
 			}
+			a.getSpeed().setZ(0d);
+		}
+		else if(a.getShape().getBounds().translate(nextPosX).intersect(otherBounds)) {
+			double f = Math.abs(a.getSpeed().getX()/b.getSpeed().getX());
+			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
+				f = 1;
+			}
+			if(a.getSpeed().getX() < 0) {
+				a.getPosition().setX(otherBounds.getMaxX()*f+a.getBounds().getWidth()/2+0.001f);
+			}else{
+				a.getPosition().setX(otherBounds.getMinX()*f-a.getBounds().getWidth()/2-0.001f);
+			}
+			a.getSpeed().setX(0d);
+		}
+		else if(a.getShape().getBounds().translate(nextPosY).intersect(otherBounds)) {
+			double f = Math.abs(a.getSpeed().getY()/b.getSpeed().getY());
+			if(f == Double.POSITIVE_INFINITY || f == Double.NEGATIVE_INFINITY) {
+				f = 1;
+			}
+			if(a.getSpeed().getY() < 0) {
+				a.getPosition().setY(otherBounds.getMaxY()*f+a.getBounds().getHeight()/2+0.001f);
+			}else{
+				a.getPosition().setY(otherBounds.getMinY()*f-a.getBounds().getHeight()/2-0.001f);
+			}
+			a.getSpeed().setY(0d);
 		}
 	}
     
