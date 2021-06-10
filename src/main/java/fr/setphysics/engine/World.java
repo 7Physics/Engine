@@ -59,25 +59,29 @@ public class World {
     }
 
     private void handleCollisions(PhysicObject po, int index) {
-		// On conserve la position actuelle de l'objet
-		// On le déplace
-		// On regarde s'il y a collision : en y, en x puis en z
-		// Si oui : on adapte la coordonnée en question
-		// On modifie la vitesse pour éviter qu'elle s'incrémente encore plus
-
 		for(int i = 0; i < index; i++) {
 			PhysicObject po2 = physicObjects.get(i);
 
-//			if(po2.isDynamic()) {
-			handleCollision(po, po2);
-//			}
-//			if(po.isDynamic()) {
-//				handleCollision(po, po2);
-//			}
+			Vec3 newCoords1 = null, newCoords2 = null;
+			if(po.isDynamic()) {
+				newCoords1 = handleCollision(po, po2);
+			}
+			if(po2.isDynamic()) {
+				newCoords2 = handleCollision(po2, po);
+			}
+
+			if(newCoords1 != null) {
+				po.getPosition().setCoords(newCoords1);
+			}
+			if(newCoords2 != null) {
+				po2.getPosition().setCoords(newCoords2);
+			}
 		}
 	}
 
-	private void handleCollision(PhysicObject a, PhysicObject b) {
+	private Vec3 handleCollision(PhysicObject a, PhysicObject b) {
+    	boolean collision = false;
+    	Vec3 positionWithoutCollisions = a.getCoords();
     	Position lastPosition = a.getLastPosition();
 		Vec3 nextPosY = new Vec3(lastPosition.getX(), a.getY(), lastPosition.getZ());
 		Vec3 nextPosX = new Vec3(a.getX(), lastPosition.getY(), lastPosition.getZ());
@@ -86,50 +90,21 @@ public class World {
 		Bounds bounds = a.getShape().getBounds();
 		Bounds otherBounds = b.getBounds();
 		if(bounds.translate(nextPosZ).intersect(otherBounds)) {
-			if(b.getSpeed().getZ() >= 0) {
-				if(b.isDynamic())
-				b.getPosition().setZ(b.getPosition().getZ()+b.getSpeed().getZ()/30);
-				if(a.isDynamic())
-				a.getPosition().setZ(a.getPosition().getZ()-a.getSpeed().getZ()/30);
-			}else{
-				if(b.isDynamic())
-				b.getPosition().setZ(b.getPosition().getZ()+b.getSpeed().getZ()/30);
-				if(a.isDynamic())
-				a.getPosition().setZ(a.getPosition().getZ()-a.getSpeed().getZ()/30);
-			}
+			collision = true;
+			positionWithoutCollisions.setZ(lastPosition.getZ());
 			a.getSpeed().setZ(0d);
-			b.getSpeed().setZ(0d);
 		}
-		else if(bounds.translate(nextPosX).intersect(otherBounds)) {
-			if(b.getSpeed().getX() >= 0) {
-				if(b.isDynamic())
-				b.getPosition().setX(b.getPosition().getX()+b.getSpeed().getX()/30);
-				if(a.isDynamic())
-				a.getPosition().setX(a.getPosition().getX()-a.getSpeed().getX()/30);
-			}else{
-				if(b.isDynamic())
-				b.getPosition().setX(b.getPosition().getX()+b.getSpeed().getX()/30);
-				if(a.isDynamic())
-				a.getPosition().setX(a.getPosition().getX()-a.getSpeed().getX()/30);
-			}
+		if(bounds.translate(nextPosX).intersect(otherBounds)) {
+			collision = true;
+			positionWithoutCollisions.setX(lastPosition.getX());
 			a.getSpeed().setX(0d);
-			b.getSpeed().setX(0d);
 		}
-		else if(bounds.translate(nextPosY).intersect(otherBounds)) {
-			if(b.getSpeed().getY() >= 0) {
-				if(b.isDynamic())
-				b.getPosition().setY(b.getPosition().getY()+b.getSpeed().getY()/30);
-				if(a.isDynamic())
-				a.getPosition().setY(a.getPosition().getY()-a.getSpeed().getY()/30);
-			}else{
-				if(b.isDynamic())
-				b.getPosition().setY(b.getPosition().getY()-b.getSpeed().getY()/30);
-				if(a.isDynamic())
-				a.getPosition().setY(a.getPosition().getY()+a.getSpeed().getY()/30);
-			}
+		if(bounds.translate(nextPosY).intersect(otherBounds)) {
+			collision = true;
+			positionWithoutCollisions.setY(lastPosition.getY());
 			a.getSpeed().setY(0d);
-			b.getSpeed().setY(0d);
 		}
+		return collision ? positionWithoutCollisions : null;
 	}
     
     public List<PhysicObject> getPhysicObjects(){

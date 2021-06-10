@@ -76,7 +76,7 @@ public class TestCollisions {
 //        addCube(new Vec3(1, 1, 1), new Vec3(0, 0, -8));
 //        addCube(new Vec3(0, 1, 1), new Vec3(0, 0, -8));
 //        addCube(new Vec3(-1, 1, 1), new Vec3(0, 0, -8));
-
+//
         for(int i = 0; i < 5; i++) {
             addSphere(new Vec3(0, i+2, 0), new Vec3(0, 0, 0));
             addSphere(new Vec3(0, i+7, .05), new Vec3(0, 0, 0));
