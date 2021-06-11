@@ -10,7 +10,7 @@ import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.common.geom.shape.Sphere;
 
-public class TestPhysicBody {
+public class TestPhysicObject {
 	private static final double epsilon = 0.001;
 	Position pos;
 	Vec3 forceX, forceY, forceZ, forceXYZ;
