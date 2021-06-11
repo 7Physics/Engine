@@ -1,6 +1,7 @@
 package fr.setphysics.engine;
 
 import fr.setphysics.common.geom.*;
+import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -102,6 +103,12 @@ public class PhysicObject implements Positionable {
 	public void removeForce(int i) {
 		forces.remove(i);
 	}
+
+	public void reset() {
+		this.position = this.positionInitial.clone();
+		this.speed = this.speedInitial.clone();
+		Logger.debug("New position: " + this.position);
+	}
 	
 	/**
 	 * Calcul du total des forces à appliquer sur l'objet.
@@ -116,11 +123,6 @@ public class PhysicObject implements Positionable {
 			additionForces.addZ(force.getZ());
 		}
 		return additionForces;
-	}
-
-	public void reset() {
-		this.position = this.positionInitial.clone();
-		this.speed = this.speedInitial.clone();
 	}
 	
 	/**
