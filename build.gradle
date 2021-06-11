@@ -22,7 +22,6 @@ dependencies {
 
     testImplementation group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
     testImplementation group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version: '2.3.2'
-    testImplementation 'com.github.7Physics:Renderer:d17579d27c'
 }
 
 test {
