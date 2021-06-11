@@ -3,19 +3,27 @@ package fr.setphysics.engine;
 import fr.setphysics.common.geom.Bounds;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Vec3;
+import fr.setphysics.common.geom.shape.Cuboid;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class World {
-    private List<PhysicObject> physicObjects;
+    private final List<PhysicObject> physicObjects;
     private boolean gravityEnabled;
     private Vec3 gravity;
     
     public World() {
-    	this.physicObjects = new ArrayList<PhysicObject>();
+    	this(15);
     }
-    
+
+	public World(double groundSize) {
+		this.physicObjects = new ArrayList<>();
+		PhysicObject ground = new PhysicObject(new Cuboid(groundSize, groundSize, 2), new Position(0, -1, 0));
+		ground.setDynamic(false);
+		addPhysicObject(ground);
+	}
+
     public void addPhysicObject(PhysicObject po) {
     	this.physicObjects.add(po);
     	if (gravityEnabled) {
