@@ -14,7 +14,7 @@ public class World {
     private Vec3 gravity;
     
     public World() {
-    	this(15);
+    	this(10);
     }
 
 	public World(double groundSize) {
