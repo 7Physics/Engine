@@ -117,6 +117,11 @@ public class PhysicObject implements Positionable {
 		}
 		return additionForces;
 	}
+
+	public void reset() {
+		this.position = this.positionInitial;
+		this.speed = this.speedInitial;
+	}
 	
 	/**
 	 * Applique l'équation du calcul de la position selon les forces appliquées.

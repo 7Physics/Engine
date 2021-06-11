@@ -27,11 +27,14 @@ public class World {
     	this.physicObjects.remove(po);
     }
     
-    public void addGravity(Vec3 gravity) {
+    public void setGravity(Vec3 gravity) {
     	if (this.gravityEnabled) {
-    		return;
+			for(PhysicObject po: this.physicObjects) {
+				po.getForces().get(0).setY(gravity.getY());
+			}
+			return;
     	}
-    	for(PhysicObject po: physicObjects) {
+    	for(PhysicObject po: this.physicObjects) {
     		po.addForce(gravity, 0);
     	}
     	this.gravity = gravity;
@@ -39,7 +42,7 @@ public class World {
     }
     
     public void deleteGravity() {
-    	if (gravityEnabled) {
+    	if (this.gravityEnabled) {
     		this.gravityEnabled = false;
     		for(PhysicObject po: this.physicObjects) {
     			po.removeForce(0);
@@ -56,6 +59,12 @@ public class World {
 			handleCollisions(po, i);
 		}
     }
+
+    public void reset() {
+		for(PhysicObject po: this.physicObjects) {
+			po.reset();
+		}
+	}
 
     private void handleCollisions(PhysicObject po, int index) {
 		for(int i = 0; i < index; i++) {
