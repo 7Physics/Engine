@@ -2,17 +2,22 @@ package fr.setphysics.engine;
 
 import fr.setphysics.common.geom.BoundingBox;
 import fr.setphysics.common.geom.Position;
+import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.common.geom.shape.Cuboid;
 import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class World {
     private final List<PhysicObject> physicObjects;
     private boolean gravityEnabled;
     private Vec3 gravity;
+
+    private Timer stepLoop;
 
 	/**
 	 * Crée un nouveau monde 3D avec une sol de dimensions 10x10
@@ -33,19 +38,35 @@ public class World {
 	}
 
 	/**
-	 * Ajoute un corps physique dans le monde
+	 * Ajoute un objet physique au monde
 	 * @param po Corps physique à ajouter
+	 * @return L'objet physique nouvellement créé.
 	 */
-    public void addPhysicObject(PhysicObject po) {
+    public PhysicObject addPhysicObject(PhysicObject po) {
     	this.physicObjects.add(po);
     	if (gravityEnabled) {
     		po.addForce(this.gravity, 0);
     	}
+    	return po;
     }
 
 	/**
+	 * Crée un objet physique à partir de la forme donnée et l'ajoute au monde. (Sucre syntaxique)
+	 * @param shape Forme de l'objet physique à ajouter
+	 * @return l'objet physique nouvellement créé.
+	 */
+	public PhysicObject addPhysicObject(Shape shape) {
+		PhysicObject po = new PhysicObject(shape);
+		this.physicObjects.add(po);
+		if (gravityEnabled) {
+			po.addForce(this.gravity, 0);
+		}
+		return po;
+	}
+
+	/**
 	 * Supprime un corps physique du monde
-	 * @param po Corps physique à supprimer
+	 * @param po Objet physique à supprimer
 	 */
 	public void removePhysicObject(PhysicObject po) {
     	this.physicObjects.remove(po);
@@ -83,8 +104,8 @@ public class World {
     }
 
 	/**
-	 * Avance la simulation de time milliseconde
-	 * @param time Avancement en milliseconde
+	 * Avance la simulation de time millisecondes
+	 * @param time Avancement en millisecondes
 	 */
 	public void step(long time) {
     	double timeSeconde = time/1000.0;
@@ -94,6 +115,36 @@ public class World {
 			doCollisions(po, i);
 		}
     }
+
+	/**
+	 * Lance la boucle de simulation de la physique
+	 * @param fps Nombre de mise à jour par seconde
+	 */
+	public void startStepLoop(int fps) {
+		if(stepLoop != null) {
+			return;
+		}
+		final long[] lastTime = {System.currentTimeMillis()};
+		stepLoop = new Timer();
+		stepLoop.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				step(System.currentTimeMillis()- lastTime[0]);
+				lastTime[0] = System.currentTimeMillis();
+			}
+		}, 0, 1000L/fps);
+	}
+
+	/**
+	 * Arrête la boucle de simulation de la physique
+	 */
+	public void stopStepLoop() {
+		if(stepLoop == null) {
+			return;
+		}
+		stepLoop.cancel();
+		stepLoop = null;
+	}
 
 	/**
 	 * Réinitialise la simulation

@@ -51,8 +51,18 @@ public class PhysicObject implements Positionable {
 
 	/**
 	 * Constructeur
+	 *
+	 * @param shape    : la forme de l'objet 3D
+	 */
+	public PhysicObject(Shape shape) {
+		this(shape, new Position(0, 0, 0), new Vec3(0, 0, 0));
+	}
+
+
+	/**
+	 * Constructeur
 	 * 
-	 * @param shape    : l'objet 3D
+	 * @param shape    : la forme de l'objet 3D
 	 * @param position : position initiale de l'objet 3D
 	 */
 	public PhysicObject(Shape shape, Position position) {
@@ -62,7 +72,7 @@ public class PhysicObject implements Positionable {
 	/**
 	 * Constructeur
 	 * 
-	 * @param shape     : l'objet 3D
+	 * @param shape     : la forme de l'objet 3D
 	 * @param position  : position initiale de l'objet
 	 * @param speedInit : vitesse initiale de l'objet
 	 */
@@ -84,18 +94,32 @@ public class PhysicObject implements Positionable {
 	 * Ajout d'une force f (représentée par un Vec3) dans la liste des forces à
 	 * appliquer.
 	 * 
-	 * @param f
+	 * @param f force
+	 * @return this
 	 */
-	public void addForce(Vec3 f) {
-		forces.add(new Vec3(f.getX() / 10.0, f.getY() / 10.0, f.getZ() / 10.0));
+	public PhysicObject addForce(Vec3 f) {
+		forces.add(f.clone().scale(.1));
+		return this;
 	}
 
-	public void addForce(Vec3 f, int index) {
+	/**
+	 * Ajoute une force à l'objet à un indice précis.
+	 * @param f force
+	 * @param index indice
+	 * @return this
+	 */
+	public PhysicObject addForce(Vec3 f, int index) {
 		forces.add(index, f);
+		return this;
 	}
-	
-	public void removeForce(int i) {
+
+	/**
+	 * @param i Supprime de l'objet la force à l'indice indiqué.
+	 * @return this
+	 */
+	public PhysicObject removeForce(int i) {
 		forces.remove(i);
+		return this;
 	}
 
 	public void reset() {
@@ -182,6 +206,9 @@ public class PhysicObject implements Positionable {
 		return this.speed;
 	}
 
+	/**
+	 * @return Position de l'objet au step précédent
+	 */
 	public Position getLastPosition() {
 		return lastPosition;
 	}
@@ -190,6 +217,19 @@ public class PhysicObject implements Positionable {
 		return position;
 	}
 
+	/**
+	 * @param position Nouvelle position de l'objet
+	 * @return this
+	 */
+	public PhysicObject setPosition(Position position) {
+		this.position = position;
+		this.lastPosition = position;
+		return this;
+	}
+
+	/**
+	 * @return Vitesse de l'objet
+	 */
 	public Vec3 getSpeed() {
 		return speed;
 	}
@@ -203,18 +243,30 @@ public class PhysicObject implements Positionable {
 		return this.speed.getX() + this.speed.getY() + this.speed.getZ();
 	}
 
+	/**
+	 * @return Boîte englobant cet objet physique
+	 */
 	public BoundingBox getBoundingBox() {
 		return shape.getBoundingBox().translate(this.position.getCoords());
 	}
 
-	public void setDynamic(boolean dynamic) {
+	/**
+	 * @param dynamic Dynamicité de l'objet. Un objet non dynamique est figé.
+	 * @return this
+	 */
+	public PhysicObject setDynamic(boolean dynamic) {
 		this.dynamic = dynamic;
+		return this;
 	}
 
 	public boolean isDynamic() {
 		return dynamic;
 	}
 
+	/**
+	 * @param other Objet physique avec lequel il faut tester la collision.
+	 * @return true si les objets sont en collision.
+	 */
 	public boolean collideWith(PhysicObject other) {
 		return this.getBoundingBox().intersect(other.getBoundingBox());
 	}
