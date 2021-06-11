@@ -119,8 +119,8 @@ public class PhysicObject implements Positionable {
 	}
 
 	public void reset() {
-		this.position = this.positionInitial;
-		this.speed = this.speedInitial;
+		this.position = this.positionInitial.clone();
+		this.speed = this.speedInitial.clone();
 	}
 	
 	/**
