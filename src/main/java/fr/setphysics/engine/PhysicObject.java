@@ -3,9 +3,7 @@ package fr.setphysics.engine;
 import fr.setphysics.common.geom.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Classe représentant un objet 3D dans l'environnement avec des
@@ -28,8 +26,6 @@ public class PhysicObject implements Positionable {
 	private Vec3 speed;
 	/* vitesse initiale de l'objet */
 	private Vec3 speedInitial;
-
-	private Set<Vec3> uniqueShapeVertices;
 
 	private boolean dynamic = true;
 
@@ -78,7 +74,6 @@ public class PhysicObject implements Positionable {
 		this.forces = new ArrayList<Vec3>();
 		this.speed = speedInit;
 		this.speedInitial = new Vec3(speedInit.getX(), speedInit.getY(), speedInit.getZ());
-		this.uniqueShapeVertices = new HashSet<>(shape.getVertices());
 	}
 
 	public Shape getShape() {
@@ -101,6 +96,11 @@ public class PhysicObject implements Positionable {
 	
 	public void removeForce(int i) {
 		forces.remove(i);
+	}
+
+	public void reset() {
+		this.position.setCoords(this.positionInitial.getCoords());
+		this.speed = this.speedInitial.clone();
 	}
 	
 	/**
