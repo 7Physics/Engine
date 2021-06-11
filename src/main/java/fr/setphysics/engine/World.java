@@ -1,6 +1,6 @@
 package fr.setphysics.engine;
 
-import fr.setphysics.common.geom.Bounds;
+import fr.setphysics.common.geom.BoundingBox;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.common.geom.shape.Cuboid;
@@ -145,19 +145,19 @@ public class World {
 		Vec3 nextPosX = new Vec3(a.getX(), lastPosition.getY(), lastPosition.getZ());
 		Vec3 nextPosZ = new Vec3(lastPosition.getX(), lastPosition.getY(), a.getZ());
 
-		Bounds bounds = a.getShape().getBounds();
-		Bounds otherBounds = b.getBounds();
-		if(bounds.translate(nextPosZ).intersect(otherBounds)) {
+		BoundingBox box = a.getShape().getBoundingBox();
+		BoundingBox otherBox = b.getBoundingBox();
+		if(box.translate(nextPosZ).intersect(otherBox)) {
 			collision = true;
 			positionWithoutCollisions.setZ(lastPosition.getZ());
 			a.getSpeed().setZ(0d);
 		}
-		if(bounds.translate(nextPosX).intersect(otherBounds)) {
+		if(box.translate(nextPosX).intersect(otherBox)) {
 			collision = true;
 			positionWithoutCollisions.setX(lastPosition.getX());
 			a.getSpeed().setX(0d);
 		}
-		if(bounds.translate(nextPosY).intersect(otherBounds)) {
+		if(box.translate(nextPosY).intersect(otherBox)) {
 			collision = true;
 			positionWithoutCollisions.setY(lastPosition.getY());
 			a.getSpeed().setY(0d);

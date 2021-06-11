@@ -203,8 +203,8 @@ public class PhysicObject implements Positionable {
 		return this.speed.getX() + this.speed.getY() + this.speed.getZ();
 	}
 
-	public Bounds getBounds() {
-		return shape.getBounds().translate(this.position.getCoords());
+	public BoundingBox getBoundingBox() {
+		return shape.getBoundingBox().translate(this.position.getCoords());
 	}
 
 	public void setDynamic(boolean dynamic) {
@@ -216,7 +216,7 @@ public class PhysicObject implements Positionable {
 	}
 
 	public boolean collideWith(PhysicObject other) {
-		return this.getBounds().intersect(other.getBounds());
+		return this.getBoundingBox().intersect(other.getBoundingBox());
 	}
 
 	@Override
