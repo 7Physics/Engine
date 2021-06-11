@@ -18,7 +18,10 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation 'com.github.7Physics:Common:57406cf8a3'
+    implementation 'com.github.7Physics:Common:master-SNAPSHOT'
+
+    testImplementation group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
+    testImplementation group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version: '2.3.2'
 }
 
 test {

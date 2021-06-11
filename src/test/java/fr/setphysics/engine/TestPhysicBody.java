@@ -1,4 +1,4 @@
-package fr.setphysics.testengine;
+package fr.setphysics.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,7 +9,6 @@ import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Shape;
 import fr.setphysics.common.geom.Vec3;
 import fr.setphysics.common.geom.shape.Sphere;
-import fr.setphysics.engine.PhysicObject;
 
 public class TestPhysicBody {
 	private static final double epsilon = 0.001;
@@ -48,17 +47,16 @@ public class TestPhysicBody {
 	public void positionTestY() {
 		po.addForce(forceY);
 		po.update(0);
-		//Cas de collision avec le sol
-		assertEquals(1,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0,po.getPosition().getCoords().getY(),epsilon);
 		// time = 1
 		po.update(1);
-		assertEquals(1.15,po.getPosition().getCoords().getY(), epsilon);
+		assertEquals(0.15,po.getPosition().getCoords().getY(), epsilon);
 		// time = 2
 		po.update(1);
-		assertEquals(1.6,po.getPosition().getCoords().getY(), epsilon);
+		assertEquals(0.6,po.getPosition().getCoords().getY(), epsilon);
 		// time = 3
 		po.update(1);
-		assertEquals(2.35,po.getPosition().getCoords().getY(), epsilon);
+		assertEquals(1.35,po.getPosition().getCoords().getY(), epsilon);
 	}
 	
 	@Test
@@ -82,23 +80,22 @@ public class TestPhysicBody {
 		po.addForce(forceXYZ);
 		po.update(0);
 		assertEquals(0,po.getPosition().getCoords().getX(),epsilon);
-		//Cas de collision -> le y est modifié
-		assertEquals(1,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0,po.getPosition().getCoords().getY(),epsilon);
 		assertEquals(0,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 1
 		po.update(1);
 		assertEquals(0.1,po.getPosition().getCoords().getX(),epsilon);
-		assertEquals(1.3,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(0.3,po.getPosition().getCoords().getY(),epsilon);
 		assertEquals(0.15,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 2
 		po.update(1);
 		assertEquals(0.4,po.getPosition().getCoords().getX(),epsilon);
-		assertEquals(2.2,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(1.2,po.getPosition().getCoords().getY(),epsilon);
 		assertEquals(0.6,po.getPosition().getCoords().getZ(),epsilon);
 		//time = 3
 		po.update(1);
 		assertEquals(0.9,po.getPosition().getCoords().getX(),epsilon);
-		assertEquals(3.7,po.getPosition().getCoords().getY(),epsilon);
+		assertEquals(2.7,po.getPosition().getCoords().getY(),epsilon);
 		assertEquals(1.35,po.getPosition().getCoords().getZ(),epsilon);
 	}
 	
