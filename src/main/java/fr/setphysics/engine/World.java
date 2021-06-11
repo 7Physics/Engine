@@ -3,6 +3,7 @@ package fr.setphysics.engine;
 import fr.setphysics.common.geom.Bounds;
 import fr.setphysics.common.geom.Position;
 import fr.setphysics.common.geom.Vec3;
+import fr.setphysics.common.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class World {
     }
 
     public void reset() {
+    	Logger.debug("Reset du monde, tous les objets retournent à leur position d'origine.");
 		for(PhysicObject po: this.physicObjects) {
 			po.reset();
 		}
