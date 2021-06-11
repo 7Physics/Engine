@@ -50,10 +50,9 @@ public class World {
     
     public void step(long time) {
     	double timeSeconde = time/1000.0;
-    	for(int i = 0; i < this.physicObjects.size(); i++) {
-    		PhysicObject po = this.physicObjects.get(i);
-			po.calculatePosition(timeSeconde);
-			po.calculateSpeed(timeSeconde);
+		for(int i = 0; i < this.physicObjects.size(); i++) {
+			PhysicObject po = this.physicObjects.get(i);
+			po.update(timeSeconde);
 			handleCollisions(po, i);
 		}
     }
@@ -106,7 +105,7 @@ public class World {
 		}
 		return collision ? positionWithoutCollisions : null;
 	}
-    
+
     public List<PhysicObject> getPhysicObjects(){
     	return this.physicObjects;
     }
