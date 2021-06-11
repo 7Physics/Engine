@@ -13,11 +13,18 @@ public class World {
     private final List<PhysicObject> physicObjects;
     private boolean gravityEnabled;
     private Vec3 gravity;
-    
-    public World() {
+
+	/**
+	 * Crée un nouveau monde 3D avec une sol de dimensions 10x10
+	 */
+	public World() {
     	this(10);
     }
 
+	/**
+	 *  Crée un nouveau monde 3D avec une sol de dimensions personnalisées
+	 * @param groundSize Dimension du sol
+	 */
 	public World(double groundSize) {
 		this.physicObjects = new ArrayList<>();
 		PhysicObject ground = new PhysicObject(new Cuboid(groundSize, groundSize, 2), new Position(0, -1, 0));
@@ -25,18 +32,30 @@ public class World {
 		addPhysicObject(ground);
 	}
 
+	/**
+	 * Ajoute un corps physique dans le monde
+	 * @param po Corps physique à ajouter
+	 */
     public void addPhysicObject(PhysicObject po) {
     	this.physicObjects.add(po);
     	if (gravityEnabled) {
     		po.addForce(this.gravity, 0);
     	}
     }
-    
-    public void removePhysicObject(PhysicObject po) {
+
+	/**
+	 * Supprime un corps physique du monde
+	 * @param po Corps physique à supprimer
+	 */
+	public void removePhysicObject(PhysicObject po) {
     	this.physicObjects.remove(po);
     }
-    
-    public void setGravity(Vec3 gravity) {
+
+	/**
+	 * Définit la gravité du monde
+	 * @param gravity Valeur de gravité en m/s
+	 */
+	public void setGravity(Vec3 gravity) {
     	if (this.gravityEnabled) {
 			for(PhysicObject po: this.physicObjects) {
 				po.getForces().get(0).setY(gravity.getY());
@@ -49,8 +68,11 @@ public class World {
     	this.gravity = gravity;
     	this.gravityEnabled = true;
     }
-    
-    public void deleteGravity() {
+
+	/**
+	 * Supprime la gravité du monde
+	 */
+	public void deleteGravity() {
     	if (this.gravityEnabled) {
     		this.gravityEnabled = false;
     		for(PhysicObject po: this.physicObjects) {
@@ -59,33 +81,45 @@ public class World {
     		this.gravity = null;
     	}
     }
-    
-    public void step(long time) {
+
+	/**
+	 * Avance la simulation de time milliseconde
+	 * @param time Avancement en milliseconde
+	 */
+	public void step(long time) {
     	double timeSeconde = time/1000.0;
 		for(int i = 0; i < this.physicObjects.size(); i++) {
 			PhysicObject po = this.physicObjects.get(i);
 			po.update(timeSeconde);
-			handleCollisions(po, i);
+			doCollisions(po, i);
 		}
     }
 
-    public void reset() {
+	/**
+	 * Réinitialise la simulation
+	 */
+	public void reset() {
     	Logger.debug("Reset du monde, tous les objets retournent à leur position d'origine.");
 		for(PhysicObject po: this.physicObjects) {
 			po.reset();
 		}
 	}
 
-    private void handleCollisions(PhysicObject po, int index) {
+	/**
+	 * Gère les collisions pour un objet précis
+	 * @param po Objet dont calculer les collisions
+	 * @param index Index de l'objet
+	 */
+    private void doCollisions(PhysicObject po, int index) {
 		for(int i = 0; i < index; i++) {
 			PhysicObject po2 = physicObjects.get(i);
 
 			Vec3 newCoords1 = null, newCoords2 = null;
 			if(po.isDynamic()) {
-				newCoords1 = handleCollision(po, po2);
+				newCoords1 = doCollision(po, po2);
 			}
 			if(po2.isDynamic()) {
-				newCoords2 = handleCollision(po2, po);
+				newCoords2 = doCollision(po2, po);
 			}
 
 			if(newCoords1 != null) {
@@ -97,7 +131,13 @@ public class World {
 		}
 	}
 
-	private Vec3 handleCollision(PhysicObject a, PhysicObject b) {
+	/**
+	 * Gère les collisions de A contre B (en mode AABB)
+	 * @param a Corps physique A
+	 * @param b Corps physique B
+	 * @return Nouvelle position à attribuer à A si une collision a été détectée ou null
+	 */
+	private Vec3 doCollision(PhysicObject a, PhysicObject b) {
     	boolean collision = false;
     	Vec3 positionWithoutCollisions = a.getCoords();
     	Position lastPosition = a.getLastPosition();
@@ -125,6 +165,10 @@ public class World {
 		return collision ? positionWithoutCollisions : null;
 	}
 
+	/**
+	 * Renvoie la liste des corps physiques contenus dans le monde
+	 * @return liste des corps physiques contenus dans le monde.
+	 */
     public List<PhysicObject> getPhysicObjects(){
     	return this.physicObjects;
     }
